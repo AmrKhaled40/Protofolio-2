@@ -1,0 +1,377 @@
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        :root {
+            --primary: #6366f1; 
+            --secondary: #06b6d4; 
+            --bg-dark: #020617;
+            --glass: rgba(30, 41, 59, 0.4);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            cursor: none; 
+        }
+
+        /* --- مؤشر الماوس المخصص --- */
+        #cursor {
+            width: 20px; height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        #cursor-blur {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            position: fixed;
+            pointer-events: none;
+            z-index: -1;
+            transform: translate(-50%, -50%);
+        }
+
+        /* --- تصميم شريط التنقل الجديد (Floating Glass Capsule) --- */
+        #main-nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%; /* عرض مرن يتناسب مع الشاشة */
+    max-width: 1200px;
+    z-index: 1000;
+    padding: 10px 20px;
+    border-radius: 100px;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box; /* يضمن عدم تسبب الـ Padding في زيادة العرض */
+}
+
+/* التغيير عند التمرير - تم ضبط العرض والشفافية */
+#main-nav.scrolled {
+    top: 15px;
+    width: 92%;
+    background: rgba(2, 6, 23, 0.9);
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+}
+
+/* شعار الاسم - مرن ليناسب الشاشات الصغيرة */
+.nav-logo {
+    font-size: clamp(1rem, 4vw, 1.25rem); /* حجم خط يتغير حسب عرض الشاشة */
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+    flex-shrink: 0; /* يمنع انكماش اللوجو */
+}
+
+.nav-logo span {
+    color: var(--primary);
+    text-transform: uppercase;
+}
+
+/* حاوية الروابط - تختفي تدريجياً لتجنب التداخل */
+.nav-links-container {
+    display: none; 
+}
+
+@media (min-width: 1024px) {
+    .nav-links-container {
+        display: flex;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 5px 10px;
+        border-radius: 100px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+}
+
+.nav-link {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #94a3b8;
+    padding: 8px 14px;
+    border-radius: 100px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: #fff;
+    background: rgba(99, 102, 241, 0.2);
+}
+
+/* منطقة الأزرار - تم تحسين التباعد لمنع التراكم */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* زر Let's Talk - متجاوب حسب حجم الشاشة */
+.btn-talk {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 100px;
+    background: var(--primary);
+    color: white;
+    transition: 0.3s;
+}
+
+@media (min-width: 768px) {
+    .btn-talk {
+        padding: 10px 24px;
+        font-size: 0.85rem;
+    }
+}
+
+/* زر القائمة المخصص للموبايل */
+#mobile-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+#mobile-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #fff;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+@media (min-width: 1024px) {
+    #mobile-toggle {
+        display: none; /* يختفي فقط عند ظهور الروابط كاملة */
+    }
+}
+
+/* القائمة الجانبية الممتدة */
+#mobile-menu {
+    position: fixed;
+    top: 0; 
+    right: -100%; 
+    width: 100%; 
+    height: 100vh;
+    background: rgba(2, 6, 23, 0.98);
+    backdrop-filter: blur(20px);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1);
+}
+
+#mobile-menu.active { 
+    right: 0; 
+}
+
+.mobile-nav-link {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
+}
+        /* --- تأثير صورة الملف الشخصي المتطور --- */
+        .profile-card {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            perspective: 1000px;
+        }
+
+        .profile-main-frame {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .profile-card:hover .profile-main-frame {
+            transform: rotateY(15deg) rotateX(10deg);
+        }
+
+        .image-content {
+            width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            border-radius: 40px;
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            z-index: 2;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+        }
+
+        .rotating-ring {
+            position: absolute;
+            top: -20px; left: -20px; right: -20px; bottom: -20px;
+            border: 2px dashed var(--primary);
+            border-radius: 50px;
+            animation: spin-ring 15s linear infinite;
+            opacity: 0.4;
+        }
+
+        @keyframes spin-ring {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .pulse-bg {
+            position: absolute;
+            width: 120%; height: 120%;
+            top: -10%; left: -10%;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            filter: blur(50px);
+            opacity: 0.15;
+            z-index: 1;
+            animation: pulse-glow 5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.15; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.15); }
+        }
+
+        /* --- تأثيرات بطاقات الزجاج --- */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .pro12 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* --- تأثيرات أيقونات المهارات --- */
+        .skill-icon-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1.5rem;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-icon-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--hover-clr);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .skill-icon-card:hover::after {
+            opacity: 0.15;
+        }
+
+        .skill-icon-card:hover {
+            border-color: var(--hover-clr);
+            box-shadow: 0 10px 30px -10px var(--hover-clr);
+            transform: translateY(-8px);
+        }
+
+        .skill-icon-card i {
+            font-size: 4rem;
+            margin-bottom: 1.2rem;
+            transition: all 0.4s ease;
+            z-index: 1;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .skill-icon-card:hover i {
+            transform: scale(1.1);
+            background: var(--hover-clr);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--hover-clr));
+        }
+
+        /* --- تأثيرات التوهج عند التواصل --- */
+        .social-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1);
+        }
+
+        .social-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(10px);
+            border-color: var(--accent-clr);
+        }
+
+        .social-icon-wrapper {
+            width: 65px; height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: var(--accent-clr-soft);
+            color: var(--accent-clr);
+            font-size: 1.8rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .social-icon-wrapper:hover {
+            transform: scale(1.15) rotate(-5deg);
+            box-shadow: 0 0 25px var(--accent-clr-soft);
+            background: var(--accent-clr);
+            color: white;
+        }
+
+        /* --- حركات الظهور عند التمرير --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #6366f1, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
